@@ -56,15 +56,15 @@ namespace Negocio
             return result;
         }
 
-        public static ML.Result UpdateEF(ML.Poliza poliza)
+        public static Negocio.Result UpdateEF(Negocio.Empleado empleado)
         {
-            ML.Result result = new ML.Result();
+            Negocio.Result result = new Negocio.Result();
             try
             {
 
-                using (DL_EF.GGarciaProgramacionNCapasEntities context = new DL_EF.GGarciaProgramacionNCapasEntities())
+                using (AccesoDatos.GGarciaEstructuraEntities context = new AccesoDatos.GGarciaEstructuraEntities())
                 {
-                    var query = context.PolizaUpdate(poliza.IdPoliza, poliza.Nombre, poliza.NumeroPoliza, poliza.User.IdUsuario, poliza.SubPoliza.IdSubPoliza);
+                    var query = context.EmpleadoUpdate(empleado.EmpleadoID, empleado.Nombre,empleado.Departamento.DepartamentoID,empleado.Puesto.PuestoID);
                     if (query >= 1)
                     {
                         result.Correct = true;
@@ -72,7 +72,7 @@ namespace Negocio
                     else
                     {
                         result.Correct = false;
-                        result.ErrorMessage = "No se actualizó la Poliza";
+                        result.ErrorMessage = "No se actualizó el Empleado";
                     }
                 }
             }
@@ -86,15 +86,15 @@ namespace Negocio
             return result;
         }
 
-        public static ML.Result DeleteEF(ML.Poliza poliza)
+        public static Negocio.Result DeleteEF(Negocio.Empleado empleado)
         {
-            ML.Result result = new ML.Result();
+            Negocio.Result result = new Negocio.Result();
             try
             {
 
-                using (DL_EF.GGarciaProgramacionNCapasEntities context = new DL_EF.GGarciaProgramacionNCapasEntities())
+                using (AccesoDatos.GGarciaEstructuraEntities context = new AccesoDatos.GGarciaEstructuraEntities())
                 {
-                    var query = context.PolizaDelete(poliza.IdPoliza);
+                    var query = context.EmpleadoDelete(empleado.EmpleadoID);
                     if (query >= 1)
                     {
                         result.Correct = true;
@@ -102,7 +102,7 @@ namespace Negocio
                     else
                     {
                         result.Correct = false;
-                        result.ErrorMessage = "No se eliminó la Poliza";
+                        result.ErrorMessage = "No se eliminó el Empleado";
                     }
                 }
             }
@@ -115,44 +115,42 @@ namespace Negocio
 
             return result;
         }
-        public static ML.Result GetAllEF()
+        public static Negocio.Result GetAllEF()
         {
-            ML.Result result = new ML.Result();
+            Negocio.Result result = new Negocio.Result();
 
             try
             {
-                using (DL_EF.GGarciaProgramacionNCapasEntities context = new DL_EF.GGarciaProgramacionNCapasEntities())
+                using (AccesoDatos.GGarciaEstructuraEntities context = new AccesoDatos.GGarciaEstructuraEntities())
                 {
 
-                    var polizas = context.PolizaGetAll().ToList();
+                    var empleados = context.EmpleadoGetAll().ToList();
 
                     result.Objects = new List<object>();
 
-                    if (polizas != null)
+                    if (empleados != null)
                     {
-                        foreach (var objPoliza in polizas)
+                        foreach (var objEmpleado in empleados)
                         {
 
                             //Instancia de la Clase
-                            ML.Poliza poliza = new ML.Poliza();
-                            poliza.IdPoliza = objPoliza.IdPoliza;
-                            poliza.Nombre = objPoliza.Nombre;
-                            poliza.NumeroPoliza = objPoliza.NumeroPoliza;
-                            poliza.FechaCreacion = objPoliza.FechaCreacion.ToString();
-                            poliza.FechaModificacion = objPoliza.FechaModificacion.ToString();
+                            Negocio.Empleado empleado = new Negocio.Empleado();
+                            empleado.EmpleadoID= objEmpleado.EmpleadoID;
+                            empleado.Nombre = objEmpleado.Nombre;
+                            
 
-                            ///Instancia clase Usuario
-                            poliza.User = new ML.Usuario();
-                            poliza.User.IdUsuario = objPoliza.IdUsuario.Value;
-                            poliza.User.Nombre = objPoliza.UsuarioUsername;
+                            ///Instancia clase Departamento
+                            empleado.Departamento = new Negocio.Departamento();
+                            empleado.Departamento.DepartamentoID = objEmpleado.DepartamentoID.Value;
+                            empleado.Departamento.Descripcion = objEmpleado.DescripcionDepartamento;
 
 
-                            //Instancia clase SubPoliza
-                            poliza.SubPoliza = new ML.SubPoliza();
-                            poliza.SubPoliza.IdSubPoliza = objPoliza.IdSubPoliza.Value;
-                            poliza.SubPoliza.Nombre = objPoliza.SubPolizaNombre;
+                            //Instancia clase Puesto
+                            empleado.Puesto = new Negocio.Puesto();
+                            empleado.Puesto.PuestoID = objEmpleado.PuestoID.Value;
+                            empleado.Puesto.Descripcion = objEmpleado.DescripcionPuesto;
 
-                            result.Objects.Add(poliza);
+                            result.Objects.Add(empleado);
                         }
 
                         result.Correct = true;
@@ -175,44 +173,42 @@ namespace Negocio
             return result;
         }
 
-        public static ML.Result GetByIdEF(int IdPoliza)
+        public static Negocio.Result GetByIdEF(int EmpleadoID)
         {
-            ML.Result result = new ML.Result();
+            Negocio.Result result = new Negocio.Result();
             try
             {
-                using (DL_EF.GGarciaProgramacionNCapasEntities context = new DL_EF.GGarciaProgramacionNCapasEntities())
+                using (AccesoDatos.GGarciaEstructuraEntities context = new AccesoDatos.GGarciaEstructuraEntities())
                 {
 
-                    var objPoliza = context.PolizaGetById(IdPoliza).FirstOrDefault();
+                    var objEmpleado = context.EmpleadoGetById(EmpleadoID).FirstOrDefault();
 
                     result.Objects = new List<object>();
 
-                    if (objPoliza != null)
+                    if (objEmpleado != null)
                     {
 
 
 
                         //Instancia de la Clase
-                        ML.Poliza poliza = new ML.Poliza();
-                        poliza.IdPoliza = objPoliza.IdPoliza;
-                        poliza.Nombre = objPoliza.Nombre;
-                        poliza.NumeroPoliza = objPoliza.NumeroPoliza;
-                        poliza.FechaCreacion = objPoliza.FechaCreacion.ToString();
-                        poliza.FechaModificacion = objPoliza.FechaModificacion.ToString();
-
-                        ///Instancia clase Usuario
-                        poliza.User = new ML.Usuario();
-                        poliza.User.IdUsuario = objPoliza.IdUsuario.Value;
-                        poliza.User.Nombre = objPoliza.UsuarioUsername;
+                        Negocio.Empleado empleado = new Negocio.Empleado();
+                        empleado.EmpleadoID = objEmpleado.EmpleadoID;
+                        empleado.Nombre = objEmpleado.Nombre;
 
 
-                        //Instancia clase SubPoliza
-                        poliza.SubPoliza = new ML.SubPoliza();
-                        poliza.SubPoliza.IdSubPoliza = objPoliza.IdSubPoliza.Value;
-                        poliza.SubPoliza.Nombre = objPoliza.SubPolizaNombre;
+                        ///Instancia clase Departamento
+                        empleado.Departamento = new Negocio.Departamento();
+                        empleado.Departamento.DepartamentoID = objEmpleado.DepartamentoID.Value;
+                        empleado.Departamento.Descripcion = objEmpleado.DescripcionDepartamento;
+
+
+                        //Instancia clase Puesto
+                        empleado.Puesto = new Negocio.Puesto();
+                        empleado.Puesto.PuestoID = objEmpleado.PuestoID.Value;
+                        empleado.Puesto.Descripcion = objEmpleado.DescripcionPuesto;
 
                         ///Linea oara igualar el resultado de mi consulta
-                        result.Object = poliza;
+                        result.Object = empleado;
 
 
                         result.Correct = true;
@@ -220,7 +216,7 @@ namespace Negocio
                     else
                     {
                         result.Correct = false;
-                        result.ErrorMessage = "Ocurrió un error al obtener los registros en la tabla Usuario";
+                        result.ErrorMessage = "Ocurrió un error al obtener los registros en la tabla Empleado";
                     }
 
                 }
